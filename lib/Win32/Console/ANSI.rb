@@ -8,7 +8,7 @@
 # Copyright (c) 2003 Jean-Louis Morel <jl_morel@bribes.org>
 # Licensed under GNU General Public License or Perl's Artistic License
 #
-require "win32/Console"
+require "Win32/Console"
 
 
 module Kernel
