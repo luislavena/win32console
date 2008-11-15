@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'rake/clean'
 require 'rake/gempackagetask'
-require 'ext_helper'
+require './tasks/ext_helper'
 
 # House-keeping
 CLEAN.include '**/*.o', '**/*.so', '**/*.bundle', '**/*.a',

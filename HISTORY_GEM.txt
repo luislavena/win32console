@@ -1,3 +1,7 @@
+1.2.0 - Code corrections integrated from GitHub
+  * Removed license conflicting ANSI Term code and functionality.
+  * Better code organization and clenaup
+
 1.1.0 - Bug fixes provided by Gordon Thiesfeld (gthiesfeld at gmail dot com).
   * added #putc to Win32::Console::ANSI::IO 
     This putc buffers escape sequences so that they will be handled properly
