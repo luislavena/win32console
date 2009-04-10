@@ -2,6 +2,14 @@
 #include "windows.h"
 #include "ruby.h"
 
+/* Workaround deprecated RString accessors */
+#ifndef RSTRING_PTR
+#define RSTRING_PTR(s) (RSTRING(s)->ptr)
+#endif
+#ifndef RSTRING_LEN
+#define RSTRING_LEN(s) (RSTRING(s)->len)
+#endif
+
 #ifdef WIN32
 #define CONSOLE_EXPORT __declspec(dllexport)
 #else
@@ -32,7 +40,6 @@ VALUE rb_mConstants;
 VALUE
 rb_getWin32Error()
 {
-   DWORD e = GetLastError();
    LPVOID lpMsgBuf;
    if (!FormatMessage( 
 		      FORMAT_MESSAGE_ALLOCATE_BUFFER | 
@@ -55,7 +62,7 @@ rb_getWin32Error()
    LocalFree( lpMsgBuf );
 
    // Raise exception
-   rb_raise(rb_eRuntimeError, RSTRING(t)->ptr);
+   rb_raise(rb_eRuntimeError, RSTRING_PTR(t));
    return Qnil;
 
 }
@@ -205,11 +212,11 @@ static VALUE rb_WriteConsole( VALUE self, VALUE hConsoleOutput,
 			      VALUE lpBuffer )
 {
    HANDLE handle = ULongToPtr( NUM2ULONG( hConsoleOutput ) );
-   DWORD nNumberOfCharsToWrite = RSTRING(lpBuffer)->len;
+   DWORD nNumberOfCharsToWrite = RSTRING_LEN(lpBuffer);
    
    DWORD lpNumberOfCharsWritten;
 
-   WriteConsole( handle, RSTRING(lpBuffer)->ptr,
+   WriteConsole( handle, RSTRING_PTR(lpBuffer),
 		 nNumberOfCharsToWrite,
 		 &lpNumberOfCharsWritten, NULL );
    return UINT2NUM( lpNumberOfCharsWritten );
@@ -219,11 +226,11 @@ static VALUE rb_WriteFile( VALUE self, VALUE hConsoleOutput,
                VALUE lpBuffer )
 {
    HANDLE handle = ULongToPtr( NUM2ULONG( hConsoleOutput ) );
-   DWORD nNumberOfBytesToWrite = RSTRING(lpBuffer)->len;
+   DWORD nNumberOfBytesToWrite = RSTRING_LEN(lpBuffer);
 
    DWORD lpNumberOfBytesWritten;
 
-   WriteFile( handle, RSTRING(lpBuffer)->ptr,
+   WriteFile( handle, RSTRING_PTR(lpBuffer),
        nNumberOfBytesToWrite,
        &lpNumberOfBytesWritten, NULL );
    return UINT2NUM( lpNumberOfBytesWritten );
@@ -332,9 +339,9 @@ static VALUE rb_ReadConsole( VALUE self, VALUE hConsoleOutput,
    DWORD nofread;
    Check_Type( buffer, T_STRING );
    int to_read = NUM2INT(numread);
-   if ( RSTRING(buffer)->len > to_read )
+   if ( RSTRING_LEN(buffer) > to_read )
       rb_raise(rb_eArgError, "String is too small to read that many characters.");
-   if (ReadConsole(handle,(void *)RSTRING(buffer)->ptr, to_read,
+   if (ReadConsole(handle,(void *)RSTRING_PTR(buffer), to_read,
 		   &nofread,NULL))
       return UINT2NUM(nofread);
    return rb_getWin32Error();
@@ -365,9 +372,9 @@ static VALUE rb_ReadConsoleOutputCharacter( VALUE self, VALUE hConsoleOutput,
    coords.X= NUM2UINT( x );
    coords.Y= NUM2UINT( y );
    int l = NUM2INT(len);
-   if ( RSTRING(charbuf)->len < l*sizeof(TCHAR) )
+   if ( (unsigned long)RSTRING_LEN(charbuf) < l*sizeof(TCHAR) )
       rb_raise(rb_eArgError, "String is too small to read that many characters.");
-   if (ReadConsoleOutputCharacter(handle,RSTRING(charbuf)->ptr,l,
+   if (ReadConsoleOutputCharacter(handle,RSTRING_PTR(charbuf),l,
 				  coords,&nofread))
       return UINT2NUM( nofread );
    return rb_getWin32Error();
@@ -413,10 +420,10 @@ static VALUE rb_ReadConsoleOutput( VALUE self, VALUE hConsoleOutput,
    from.Right  = NUM2INT( r );
    from.Bottom = NUM2INT( b );
    Check_Type( buffer, T_STRING );
-   if ( RSTRING(buffer)->len < (sizeof(CHAR_INFO)*size.X*size.Y) )
+   if ( (unsigned long)RSTRING_LEN(buffer) < (sizeof(CHAR_INFO)*size.X*size.Y) )
       rb_raise(rb_eArgError, "string buffer is too small for reading that many characters.");
    HANDLE handle = ULongToPtr( NUM2ULONG( hConsoleOutput ) );
-   if (!ReadConsoleOutput(handle,(CHAR_INFO *)RSTRING(buffer)->ptr,size,coords,&from))
+   if (!ReadConsoleOutput(handle,(CHAR_INFO *)RSTRING_PTR(buffer),size,coords,&from))
       return rb_getWin32Error();
 
    VALUE ret = rb_ary_new();
@@ -739,7 +746,7 @@ not_there:
 VALUE rb_constant( VALUE self, VALUE name )
 {
    Check_Type( name, T_STRING );
-   return ULONG2NUM( c_constant( RSTRING(name)->ptr ) );
+   return ULONG2NUM( c_constant( RSTRING_PTR(name) ) );
 }
 
 
@@ -844,7 +851,7 @@ VALUE
 rb_SetConsoleTitle( VALUE self, VALUE title )
 {
    Check_Type( title, T_STRING );
-   if (SetConsoleTitle(RSTRING( title )->ptr))
+   if (SetConsoleTitle(RSTRING_PTR( title )))
       return NUM2UINT(1);
    return rb_getWin32Error();
 }
@@ -1081,7 +1088,7 @@ rb_WriteConsoleOutput(VALUE self, VALUE h, VALUE buffer,
     to.Top    = NUM2INT( t );
     to.Right  = NUM2INT( r );
     to.Bottom = NUM2INT( b );
-    if (WriteConsoleOutput(handle,(CHAR_INFO *)RSTRING(buffer)->ptr,
+    if (WriteConsoleOutput(handle,(CHAR_INFO *)RSTRING_PTR(buffer),
 			   size,coords,&to)) {
        VALUE ret = rb_ary_new();
        rb_ary_push( ret, INT2FIX( to.Left   ) );
@@ -1104,9 +1111,9 @@ rb_WriteConsoleOutputAttribute(VALUE self, VALUE h, VALUE s,
     
     unsigned short buffer[80*999*sizeof(unsigned short)];
     DWORD written;
-    DWORD towrite = RSTRING(s)->len;
+    DWORD towrite = RSTRING_LEN(s);
     for(unsigned i=0; i<towrite; i++) {
-        buffer[i] = (unsigned short)(RSTRING(s)->ptr[i]);
+        buffer[i] = (unsigned short)(RSTRING_PTR(s)[i]);
     }
     COORD coords;
     coords.X=NUM2INT( x );
@@ -1131,8 +1138,8 @@ rb_WriteConsoleOutputCharacter(VALUE self, VALUE h, VALUE s,
     COORD coords;
     coords.X=NUM2INT( x );
     coords.Y=NUM2INT( y );
-    if (WriteConsoleOutputCharacter(handle,(LPCTSTR)RSTRING(s)->ptr,
-				    RSTRING(s)->len,coords,&written)) {
+    if (WriteConsoleOutputCharacter(handle,(LPCTSTR)RSTRING_PTR(s),
+				    RSTRING_LEN(s),coords,&written)) {
        return UINT2NUM( written );
     }
     return rb_getWin32Error();
