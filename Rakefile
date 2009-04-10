@@ -1,12 +1,7 @@
 require 'rubygems'
 require 'rake/clean'
 require 'rake/gempackagetask'
-require './tasks/ext_helper'
-
-# House-keeping
-CLEAN.include '**/*.o', '**/*.so', '**/*.bundle', '**/*.a',
-  '**/*.log', '{ext,lib}/*.{bundle,so,obj,pdb,lib,def,exp}',
-  'ext/Makefile', '**/*.db'
+require 'rake/extensiontask'
 
 spec = Gem::Specification.new do |s|
   s.name              = 'win32console'
@@ -31,7 +26,7 @@ The gem project can be found at
 EOS
 
   s.require_path      = 'lib'
-  s.extensions        = %w[ ext/extconf.rb ]
+  s.extensions        = %w[ ext/Console/extconf.rb ]
   s.files             = FileList[ '{doc,ext,lib,test}/**/*.{rdoc,c,cpp,rb}', 'Rakefile', *s.extra_rdoc_files ]
 
   s.rdoc_options << '--title' << 'Win32Console Gem -- Gem for Win32::Console Project' <<
@@ -44,6 +39,5 @@ Rake::GemPackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 
-# Use of ext_helper to properly setup compile tasks and native gem generation
-# add 'native', 'compile' and some tweaks to gem specifications.
-setup_extension 'Console', spec
+Rake::ExtensionTask.new('Console', spec) do |ext|
+end
