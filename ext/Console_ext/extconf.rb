@@ -15,4 +15,4 @@
 #
 ##################################################################
 require 'mkmf'
-create_makefile('Console')
+create_makefile('Console_ext')
