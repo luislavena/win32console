@@ -388,12 +388,14 @@ static VALUE rb_ReadConsoleOutputAttribute( VALUE self, VALUE hConsoleOutput,
    DWORD nofread;
    unsigned short abuffer[80*999*sizeof(unsigned short)];
    char cbuffer[80*999];
+   unsigned i = 0;
+
    coords.X= NUM2UINT( x );
    coords.Y= NUM2UINT( y );
    if (ReadConsoleOutputAttribute(handle, abuffer, NUM2UINT(len),
 				  coords,&nofread))
    {
-      for(unsigned i=0;i<nofread;++i) {
+      for(i=0;i<nofread;++i) {
 	 cbuffer[i]=(char)abuffer[i];
       }
       return rb_str_new( cbuffer, nofread );
@@ -1111,7 +1113,9 @@ rb_WriteConsoleOutputAttribute(VALUE self, VALUE h, VALUE s,
     unsigned short buffer[80*999*sizeof(unsigned short)];
     DWORD written;
     DWORD towrite = RSTRING_LEN(s);
-    for(unsigned i=0; i<towrite; i++) {
+    unsigned i = 0;
+
+    for(i=0; i<towrite; i++) {
         buffer[i] = (unsigned short)(RSTRING_PTR(s)[i]);
     }
     COORD coords;
