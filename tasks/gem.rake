@@ -2,15 +2,17 @@ require 'rubygems/package_task'
 require 'hoe'
 
 HOE = Hoe.spec 'win32console' do
+  self.version = '1.3.0'
+
   developer 'Gonzalo Garramuno',  'ggarra@advancedsl.com.ar'
   developer 'Justin Bailey',      'jgbailey@gmail.com'
   developer 'Luis Lavena',        'luislavena@gmail.com'
 
   self.rubyforge_name = 'winconsole'
 
-  spec_extras[:required_ruby_version] = Gem::Requirement.new('> 1.8.5')
+  spec_extras[:required_ruby_version] = Gem::Requirement.new('>= 1.8.6')
 
-  spec_extras[:extensions] = ["ext/Console/extconf.rb"]
+  spec_extras[:extensions] = ["ext/Console_ext/extconf.rb"]
 
   extra_dev_deps << ['rake-compiler', "~> 0.7.0"]
 end
