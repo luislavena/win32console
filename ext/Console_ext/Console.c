@@ -1,4 +1,4 @@
-#include "windows.h"
+#include <windows.h>
 #include "ruby.h"
 
 /* Workaround deprecated RString accessors */
@@ -7,12 +7,6 @@
 #endif
 #ifndef RSTRING_LEN
 #define RSTRING_LEN(s) (RSTRING(s)->len)
-#endif
-
-#ifdef WIN32
-#define CONSOLE_EXPORT __declspec(dllexport)
-#else
-#error Not compiling on Windows
 #endif
 
 VALUE rb_mWin32;
@@ -66,9 +60,6 @@ rb_getWin32Error()
 
 }
 
-
-extern "C"
-{
 
 static VALUE rb_GetStdHandle(VALUE self, VALUE handle)
 {
@@ -261,12 +252,12 @@ static VALUE rb_GetConsoleCursorInfo( VALUE self, VALUE hConsoleOutput )
    return ret;
 }
 
-void rb_ParseEvent(VALUE ret, INPUT_RECORD& event )
+void rb_ParseEvent(VALUE ret, INPUT_RECORD *event )
 {
-   switch(event.EventType) {
+   switch(event->EventType) {
       case KEY_EVENT:
 	 {
-	    KEY_EVENT_RECORD* kevent=(KEY_EVENT_RECORD *)&(event.Event);
+	    KEY_EVENT_RECORD* kevent=(KEY_EVENT_RECORD *)&(event->Event);
 	    rb_ary_push(ret, UINT2NUM(KEY_EVENT));
 	    rb_ary_push(ret, UINT2NUM(kevent->bKeyDown));
 	    rb_ary_push(ret, UINT2NUM(kevent->wRepeatCount));
@@ -282,7 +273,7 @@ void rb_ParseEvent(VALUE ret, INPUT_RECORD& event )
 	 }
       case MOUSE_EVENT:
 	 {
-	    MOUSE_EVENT_RECORD * mevent=(MOUSE_EVENT_RECORD *)&(event.Event);
+	    MOUSE_EVENT_RECORD * mevent=(MOUSE_EVENT_RECORD *)&(event->Event);
 	    rb_ary_push(ret, UINT2NUM(MOUSE_EVENT) );
 	    rb_ary_push(ret, UINT2NUM(mevent->dwMousePosition.X) );
 	    rb_ary_push(ret, UINT2NUM(mevent->dwMousePosition.Y) );
@@ -294,7 +285,7 @@ void rb_ParseEvent(VALUE ret, INPUT_RECORD& event )
       case WINDOW_BUFFER_SIZE_EVENT:
 	 {
 	    WINDOW_BUFFER_SIZE_RECORD* wevent=
-	    (WINDOW_BUFFER_SIZE_RECORD *)&(event.Event);
+	    (WINDOW_BUFFER_SIZE_RECORD *)&(event->Event);
 	    rb_ary_push(ret, UINT2NUM(WINDOW_BUFFER_SIZE_EVENT) );
 	    rb_ary_push(ret, UINT2NUM(wevent->dwSize.X) );
 	    rb_ary_push(ret, UINT2NUM(wevent->dwSize.Y) );
@@ -302,14 +293,14 @@ void rb_ParseEvent(VALUE ret, INPUT_RECORD& event )
 	 break;
       case MENU_EVENT:
 	 {
-	    MENU_EVENT_RECORD* mevent= (MENU_EVENT_RECORD *)&(event.Event);
+	    MENU_EVENT_RECORD* mevent= (MENU_EVENT_RECORD *)&(event->Event);
 	    rb_ary_push(ret, UINT2NUM(MENU_EVENT) );
 	    rb_ary_push(ret, UINT2NUM(mevent->dwCommandId) );
 	 }
 	 break;
       case FOCUS_EVENT:
 	 {
-	    FOCUS_EVENT_RECORD* mevent= (FOCUS_EVENT_RECORD *)&(event.Event);
+	    FOCUS_EVENT_RECORD* mevent= (FOCUS_EVENT_RECORD *)&(event->Event);
 	    rb_ary_push(ret, UINT2NUM(FOCUS_EVENT) );
 	    rb_ary_push(ret, UINT2NUM(mevent->bSetFocus) );
 	 }
@@ -327,7 +318,7 @@ static VALUE rb_PeekConsoleInput( VALUE self, VALUE hConsoleOutput )
       return rb_getWin32Error();
    
    VALUE ret = rb_ary_new();
-   rb_ParseEvent( ret, event );
+   rb_ParseEvent( ret, &event );
    return ret;
 }
 
@@ -355,7 +346,7 @@ static VALUE rb_ReadConsoleInput( VALUE self, VALUE hConsoleOutput )
       return rb_getWin32Error();
    
    VALUE ret = rb_ary_new();
-   rb_ParseEvent( ret, event );
+   rb_ParseEvent( ret, &event );
    return ret;
 }
 
@@ -1149,8 +1140,7 @@ rb_WriteConsoleOutputCharacter(VALUE self, VALUE h, VALUE s,
 }
 
 
-CONSOLE_EXPORT  void
-Init_Console_ext(void)
+void Init_Console_ext(void)
 {
    rb_mWin32 = rb_define_module("Win32");
    rb_define_const(rb_mKernel, "Win32", rb_mWin32);
@@ -1223,6 +1213,4 @@ Init_Console_ext(void)
    RB_DEF_API_METHOD(WriteConsoleOutputAttribute, 4);
    RB_DEF_API_METHOD(WriteConsoleOutputCharacter, 4);
  
-}
-
 }
