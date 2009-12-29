@@ -1,4 +1,4 @@
-=== 1.3.0 / 2009-12-29
+=== 1.3.0.beta
 
 * Enhancements
   * Usage of Hoe and rake-compiler to ease releasing and extension
