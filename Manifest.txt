@@ -2,7 +2,7 @@ History.txt
 Manifest.txt
 Rakefile
 README.txt
-ext/Console_ext/Console.cpp
+ext/Console_ext/Console.c
 ext/Console_ext/extconf.rb
 extra/Console.rdoc
 extra/Console_ANSI.rdoc
