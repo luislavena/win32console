@@ -14,6 +14,10 @@ HOE = Hoe.spec 'win32console' do
 
   spec_extras[:extensions] = ["ext/Console_ext/extconf.rb"]
 
+  spec_extras[:rdoc_options] = proc do |rdoc_options|
+    rdoc_options << "--exclude" << "ext"
+  end
+
   extra_dev_deps << ['rake-compiler', "~> 0.7.0"]
 end
 

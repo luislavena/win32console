@@ -7,6 +7,14 @@
 * Bugfixes:
   * Works with Ruby 1.9
 
+* Known issues:
+  * win32console no longer automatically translate encoding to the console
+    output enconding. Please use Iconv to convert from your encoding (eg. UTF8)
+    to current console output:
+
+      current_cp = Win32::Console::OutputCP()
+      Iconv.iconv("cp#{current_cp}", "utf-8", utf_string)
+
 === 1.2.0 / 2008-11-22
 
 * Enhancements
@@ -64,9 +72,10 @@
     [Gordon Thiesfeld]
 
   * Modified all Win32::Console::API methods
+    [Gordon Thiesfeld]
+
     It was assigning Win32API functions to class variables.  I switched them to instance variables. I also changed the idiom it was using to instantiate the objects.
     For instance, instead of:
-    [Gordon Thiesfeld]
 
       if @@m_AllocConsole == nil
       @@m_AllocConsole = Win32API.new( "kernel32", "AllocConsole", 
