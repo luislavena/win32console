@@ -51,3 +51,13 @@ After checking out the source, run:
 
 This task will install any missing dependencies, run the tests/specs,
 and generate the RDoc.
+
+== LICENSE
+
+This program is FREE; you can redistribute, modify, disassemble, or even
+reverse engineer this software at your will. Keep in mind, however, that
+NOTHING IS GUARANTEED to work and everything you do is AT YOUR OWN RISK - I
+will not take responsibility for any damage, loss of money and/or health
+that may arise from the use of this program!
+
+This is distributed under the terms of Larry Wall's Artistic License.

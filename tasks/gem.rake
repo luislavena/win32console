@@ -14,6 +14,8 @@ HOE = Hoe.spec 'win32console' do
 
   spec_extras[:extensions] = ["ext/Console_ext/extconf.rb"]
 
+  extra_rdoc_files.push *FileList['extra/*.rdoc']
+
   spec_extras[:rdoc_options] = proc do |rdoc_options|
     rdoc_options << "--exclude" << "ext"
   end
@@ -21,7 +23,7 @@ HOE = Hoe.spec 'win32console' do
   extra_dev_deps << ['rake-compiler', "~> 0.7.0"]
 end
 
-file "#{HOE.spec.name}.gemspec" => ['Rakefile', 'tasks/gem.rake', 'lib/sqlite3/version.rb'] do |t|
+file "#{HOE.spec.name}.gemspec" => ['Rakefile', 'tasks/gem.rake'] do |t|
   puts "Generating #{t.name}"
   File.open(t.name, 'w') { |f| f.puts HOE.spec.to_yaml }
 end
