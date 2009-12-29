@@ -4,23 +4,13 @@
 # Original Win32API_Console was:
 # Copyright (C) 2001 Michael L. Semon (mlsemon@sega.net)
 
+# support multiple ruby version (fat binaries under windows)
 begin
-  # If Console.so is available, use that.  Otherwise, we define
-  # equivalent functions in ruby (a tad slower)
-  # That dll should define everything in an identical interface
-  # to all the ruby code that the rescue below defines.
-
-  require "Console.so"
-  STDERR.print "Using faster, DLL Console.so\n" if $DEBUG
-
-rescue Exception
-
-  STDERR.print "Using slower, non-DLL Console.rb\n" if $DEBUG
-
-  require 'Win32/Console/constants.rb'
-  require 'Win32/Console/api.rb'
-
-end  # rescue
+  require 'Console_ext'
+rescue LoadError
+  RUBY_VERSION =~ /(\d+.\d+)/
+  require "#{$1}/Console_ext"
+end
 
 module Win32
   class Console

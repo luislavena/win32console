@@ -1,3 +1,13 @@
+#
+# NOTE: Keep this file clean.
+# Add your customizations inside tasks directory.
+# Thank You.
+#
+
+# load rakefile extensions (tasks)
+Dir['tasks/*.rake'].sort.each { |f| load f }
+
+=begin
 require 'rubygems'
 require 'rake/clean'
 require 'rake/gempackagetask'
@@ -41,3 +51,4 @@ end
 
 Rake::ExtensionTask.new('Console', spec) do |ext|
 end
+=end

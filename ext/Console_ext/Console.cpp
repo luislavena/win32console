@@ -1,4 +1,3 @@
-
 #include "windows.h"
 #include "ruby.h"
 
@@ -1147,7 +1146,7 @@ rb_WriteConsoleOutputCharacter(VALUE self, VALUE h, VALUE s,
 
 
 CONSOLE_EXPORT  void
-Init_Console(void)
+Init_Console_ext(void)
 {
    rb_mWin32 = rb_define_module("Win32");
    rb_define_const(rb_mKernel, "Win32", rb_mWin32);
