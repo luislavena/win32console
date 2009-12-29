@@ -4,3 +4,5 @@ Makefile
 *.obj
 *.o
 pkg
+doc
+tmp
