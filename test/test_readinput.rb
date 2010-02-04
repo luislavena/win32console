@@ -10,7 +10,9 @@ puts "InputChar: Type a phrase then ENTER, please:"
 x1 = a.InputChar(1)
 puts "Your phrase starts with the character #{x1}"
 
+gets #clear regular input buffer
 
+oldMode = a.Mode
 fdwMode = ENABLE_WINDOW_INPUT | ENABLE_MOUSE_INPUT
 
 a.Mode(fdwMode)
@@ -59,4 +61,18 @@ else
     puts "...should never get here"
   end
 end
+
+
+
+a.Mode(oldMode)
+
+a.Echo(false)
+puts
+puts "Echo is #{a.Echo}: Type something, which you SHOULD NOT see"
+gets
+
+a.Echo(true)
+puts
+puts "Echo is #{a.Echo}: Type something, which you SHOULD see"
+gets
 

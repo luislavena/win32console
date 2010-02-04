@@ -184,6 +184,16 @@ module Win32
       end
     end
 
+    def Echo(flag = nil)
+      if flag.nil?
+        (self.Mode & ENABLE_ECHO_INPUT) == ENABLE_ECHO_INPUT
+      elsif flag
+        self.Mode(self.Mode |  ENABLE_ECHO_INPUT)
+      else
+        self.Mode(self.Mode & ~ENABLE_ECHO_INPUT)
+      end
+    end
+
     def WriteInput(*t)
       API.WriteConsoleInput(@handle, *t)
     end
