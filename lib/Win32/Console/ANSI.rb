@@ -39,6 +39,11 @@ module Win32
 
         include Win32::Console::Constants
 
+        FD_STD_MAP = {
+          :stdout => [1, STD_OUTPUT_HANDLE],
+          :stderr => [2, STD_ERROR_HANDLE]
+        }
+
         # @todo: encode is another perl module
         EncodeOk = false
 
@@ -77,9 +82,10 @@ module Win32
               47 => BACKGROUND_RED|BACKGROUND_GREEN|BACKGROUND_BLUE, # white background
         }
 
-        def initialize
-          super(1,'w')
-          @Out = Win32::Console.new(STD_OUTPUT_HANDLE)
+        def initialize(fd_std = :stdout)
+          fd, handle = FD_STD_MAP[fd_std]
+          super(fd, 'w')
+          @Out = Win32::Console.new(handle)
           @x = @y = 0           # to save cursor position
           @foreground = 7
           @background = 0
@@ -332,5 +338,5 @@ module Win32
   end
 end
 
-$stdout = Win32::Console::ANSI::IO.new()
-
+$stdout = Win32::Console::ANSI::IO.new(:stdout)
+$stderr = Win32::Console::ANSI::IO.new(:stderr)
