@@ -101,6 +101,7 @@ module Win32
         # this redefined #putc buffers escape sequences but passes
         # other values to #write as normal.
         def putc(int)
+          int = int.ord if RUBY_VERSION >= "1.9"
           if @buffer.empty?
             # match \e
             unless int == 27
@@ -118,6 +119,7 @@ module Win32
               @buffer.clear
             end
           end
+        end
 
         # #write checks if $stdout is going to the console
         # or if it's being redirected.
