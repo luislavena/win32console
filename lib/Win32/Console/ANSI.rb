@@ -101,8 +101,10 @@ module Win32
         # this redefined #putc buffers escape sequences but passes
         # other values to #write as normal.
         def putc(int)
+          int = int.ord if RUBY_VERSION >= "1.9"
           if @buffer.empty?
-            unless int == ?\e
+            # match \e
+            unless int == 27
                write(int.chr)
             else
               @buffer << int
@@ -110,8 +112,9 @@ module Win32
           else
             @buffer << int
             case int
-            when ?m, ?J, ?L, ?M, ?@, ?P, ?A, ?B, ?C, ?D,
-                 ?E, ?F, ?G, ?H, ?f, ?s, ?u, ?U, ?K, ?X
+            # match m, J, L, M, @, P, A, B, C, D, E, F, G, H, f, s, u, U, K, X
+            when 109, 74, 76, 77, 64, 80, 65, 66, 67, 68, 
+                  69, 70, 71, 72, 102, 115, 117, 85, 75, 88
               write(@buffer.pack("c*"))
               @buffer.clear
             end
