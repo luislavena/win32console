@@ -1,23 +1,15 @@
-=== 1.3.0.beta3 / 2010-03-12
+=== 1.3.0 / 2007-03-14
+
+* Enhancements
+  * Works with Ruby 1.9
+  * Usage of Hoe and rake-compiler to ease releasing and extension
+    compilation.
+  * Redirect STDERR to be processed also for ANSI codes. Closes GH-4
+  * Allow ECHO to be displayed [jloveces]
 
 * Bugfixes
   * Properly catch coloring when using autospec in Ruby 1.9 [vertiginous]
     Closes GH-3
-
-=== 1.3.0.beta2 / 2010-03-07
-
-* Enhancements
-  * Redirect STDERR to be processed also for ANSI codes. Closes GH-4
-  * Allow ECHO to be displayed [jloveces]
-
-=== 1.3.0.beta1
-
-* Enhancements
-  * Usage of Hoe and rake-compiler to ease releasing and extension
-  compilation.
-
-* Bugfixes:
-  * Works with Ruby 1.9
 
 * Known issues:
   * win32console no longer automatically translate encoding to the console
