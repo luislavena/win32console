@@ -29,6 +29,7 @@ module Win32
         @handle = API.CreateConsoleScreenBuffer( param1, param2,
                                                  CONSOLE_TEXTMODE_BUFFER )
       end
+      @attr_default = self.Attr
     end
 
     def Display
@@ -269,7 +270,7 @@ module Win32
     end
 
     def Cls()
-      attr = ATTR_NORMAL
+      attr = @attr_default
       x, y = Size()
       left, top, right , bottom = Window()
       vx = right  - left
