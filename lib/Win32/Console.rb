@@ -208,23 +208,21 @@ module Win32
     end
 
     def DefaultBold # Foreground Intensity
-      self.AttrBits[4] == ?1
+      self.Attr[3] == 1
     end
 
     def DefaultUnderline # Background Intensity
-      self.AttrBits[0] == ?1
+      self.Attr[7] == 1
     end
 
     def DefaultForeground
-      self.AttrBits[5..7].reverse.to_i(2)
+      a = self.Attr
+      (0..2).map{|i| a[i] }.inject(0){|num, bit| (num << 1) + bit }
     end
 
     def DefaultBackground
-      self.AttrBits[1..3].reverse.to_i(2)
-    end
-
-    def AttrBits
-      sprintf("%08b",self.Attr)
+      a = self.Attr
+      (4..6).map{|i| a[i] }.inject(0){|num, bit| (num << 1) + bit }
     end
 
     def Size(*t)
