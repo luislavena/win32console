@@ -207,6 +207,26 @@ module Win32
       end
     end
 
+    def DefaultBold # Foreground Intensity
+      self.AttrBits[4] == ?1
+    end
+
+    def DefaultUnderline # Background Intensity
+      self.AttrBits[0] == ?1
+    end
+
+    def DefaultForeground
+      self.AttrBits[5..7].reverse.to_i(2)
+    end
+
+    def DefaultBackground
+      self.AttrBits[1..3].reverse.to_i(2)
+    end
+
+    def AttrBits
+      sprintf("%08b",self.Attr)
+    end
+
     def Size(*t)
       if t.size == 0
         col, row = API.GetConsoleScreenBufferInfo(@handle )
