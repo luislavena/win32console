@@ -4,6 +4,15 @@
 * http://github.com/luislavena/win32console
 * http://rdoc.info/projects/luislavena/win32console
 
+== DEPRECATION NOTICE
+
+Win32::Console has been deprecated in favor of an external tool named ANSICON:
+
+* http://adoxa.110mb.com/ansicon/index.html
+* http://blog.mmediasys.com/2010/11/24/we-all-love-colors/
+
+This project is left here for history purposes but no further development will be done.
+
 == DESCRIPTION
 
 Win32::Console allows controling the windows command line terminal
