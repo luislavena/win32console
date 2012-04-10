@@ -50,7 +50,21 @@ To output a simple bolded string, try this script:
 
 == INSTALL
 
+To install from rubygems, simple run:
+
   gem install win32console
+
+To install from source, make sure you have the Ruby development kit from
+RubyInstaller on your Windows host, install the following gems:
+
+  * rake
+  * hoe
+  * rake-compiler
+
+Then run the following:
+
+  rake gem
+  gem install pkg\win32console-1.3.0.gem
 
 == DEVELOPERS:
 
