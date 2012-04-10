@@ -29,6 +29,11 @@ module Win32
         @handle = API.CreateConsoleScreenBuffer( param1, param2,
                                                  CONSOLE_TEXTMODE_BUFFER )
       end
+
+      # Preserve original attribute setting, so Cls can use it
+      if t == STD_OUTPUT_HANDLE or t == STD_ERROR_HANDLE
+        @attr_default = self.Attr
+      end
     end
 
     def Display
@@ -207,6 +212,24 @@ module Win32
       end
     end
 
+    def DefaultBold # Foreground Intensity
+      self.Attr[3] == 1
+    end
+
+    def DefaultUnderline # Background Intensity
+      self.Attr[7] == 1
+    end
+
+    def DefaultForeground
+      a = self.Attr
+      (0..2).map{|i| a[i] }.inject(0){|num, bit| (num << 1) + bit }
+    end
+
+    def DefaultBackground
+      a = self.Attr
+      (4..6).map{|i| a[i] }.inject(0){|num, bit| (num << 1) + bit }
+    end
+
     def Size(*t)
       if t.size == 0
         col, row = API.GetConsoleScreenBufferInfo(@handle )
@@ -251,7 +274,7 @@ module Win32
     end
 
     def Cls()
-      attr = ATTR_NORMAL
+      attr = @attr_default || ATTR_NORMAL
       x, y = Size()
       left, top, right , bottom = Window()
       vx = right  - left
