@@ -29,7 +29,11 @@ module Win32
         @handle = API.CreateConsoleScreenBuffer( param1, param2,
                                                  CONSOLE_TEXTMODE_BUFFER )
       end
-      @attr_default = self.Attr
+
+      # Preserve original attribute setting, so Cls can use it
+      if t == STD_OUTPUT_HANDLE or t == STD_ERROR_HANDLE
+        @attr_default = self.Attr
+      end
     end
 
     def Display
@@ -270,7 +274,7 @@ module Win32
     end
 
     def Cls()
-      attr = @attr_default
+      attr = @attr_default || ATTR_NORMAL
       x, y = Size()
       left, top, right , bottom = Window()
       vx = right  - left
