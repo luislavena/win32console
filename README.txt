@@ -8,7 +8,7 @@
 
 Win32::Console has been deprecated in favor of an external tool named ANSICON:
 
-* http://adoxa.110mb.com/ansicon/index.html
+* https://github.com/adoxa/ansicon
 * http://blog.mmediasys.com/2010/11/24/we-all-love-colors/
 
 This project is left here for history purposes but no further development will be done.
