@@ -87,10 +87,14 @@ module Win32
           super(fd, 'w')
           @Out = Win32::Console.new(handle)
           @x = @y = 0           # to save cursor position
-          @foreground = 7
-          @background = 0
-          @bold =
-          @underline =
+          @default_foreground = @Out.DefaultForeground
+          @default_background = @Out.DefaultBackground
+          @default_bold       = @Out.DefaultBold
+          @default_underline  = @Out.DefaultUnderline
+          @foreground = @default_foreground
+          @background = @default_background
+          @bold       = @default_bold
+          @underline  = @default_underline
           @revideo =
           @concealed = nil
           @conv = 1        # char conversion by default
@@ -159,10 +163,10 @@ module Win32
                     atv = attr.to_i
                     case atv
                     when 0  # ESC[0m reset
-                      @foreground = 7
-                      @background = 0
-                      @bold =
-                      @underline =
+                      @foreground = @default_foreground
+                      @background = @default_background
+                      @bold       = @default_bold
+                      @underline  = @default_underline
                       @revideo =
                       @concealed = nil
                     when 1
