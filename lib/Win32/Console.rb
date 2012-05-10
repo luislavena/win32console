@@ -31,7 +31,7 @@ module Win32
       end
 
       # Preserve original attribute setting, so Cls can use it
-      if t == STD_OUTPUT_HANDLE or t == STD_ERROR_HANDLE
+      if (t == STD_OUTPUT_HANDLE or t == STD_ERROR_HANDLE) and not redirected?
         @attr_default = self.Attr
       end
     end
@@ -283,6 +283,15 @@ module Win32
       FillAttr(attr, x*y, 0, 0)
       Cursor(0,0)
       Window(1,0,0,vx,vy)
+    end
+
+    # Return true if console is redirected or piped and no longer is outputing
+    # to the normal console.
+    #
+    # This can be used to determine if normal console operations will be
+    # available.
+    def redirected?
+      self.Mode > 31
     end
 
     def Console.Free()
