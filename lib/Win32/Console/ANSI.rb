@@ -87,10 +87,15 @@ module Win32
           super(fd, 'w')
           @Out = Win32::Console.new(handle)
           @x = @y = 0           # to save cursor position
-          @default_foreground = @Out.DefaultForeground
-          @default_background = @Out.DefaultBackground
-          @default_bold       = @Out.DefaultBold
-          @default_underline  = @Out.DefaultUnderline
+
+          # None of these calls will work, when we are redirected
+          unless redirected?
+            @default_foreground = @Out.DefaultForeground
+            @default_background = @Out.DefaultBackground
+            @default_bold       = @Out.DefaultBold
+            @default_underline  = @Out.DefaultUnderline
+          end
+
           @foreground = @default_foreground
           @background = @default_background
           @bold       = @default_bold
@@ -109,7 +114,7 @@ module Win32
           if @buffer.empty?
             # match \e
             unless int == 27
-               write(int.chr)
+              write(int.chr)
             else
               @buffer << int
             end
@@ -142,9 +147,12 @@ module Win32
           end
         end
 
-        # returns true if outputs is being redirected.
+        # Returns true if output is being redirected to something other then a
+        # terminal.
+        #
+        # For now just checks the status of Win32::Console#redirected?
         def redirected?
-          @Out.Mode > 31
+          @Out.redirected?
         end
 
         private
