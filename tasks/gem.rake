@@ -19,7 +19,12 @@ HOE = Hoe.spec 'win32console' do
     rdoc_options << "--exclude" << "ext"
   end
 
-  extra_dev_deps << ['rake-compiler', "~> 0.7.0"]
+  extra_dev_deps.push(
+    ['rake-compiler', "~> 0.7.0"],
+    ['mocha', '>= 0.10.5'],
+    ['rspec', '>= 2.9.0'],
+    ['rspec-core', '>= 2.9.0']
+  )
 end
 
 file "#{HOE.spec.name}.gemspec" => ['Rakefile', 'tasks/gem.rake'] do |t|
