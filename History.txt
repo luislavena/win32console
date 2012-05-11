@@ -1,3 +1,9 @@
+=== 1.3.2 / 2012-05-11
+
+* Bugfixes:
+  * Fix background color issue associated with redirected outputs. Closes GH-14
+    [kbarber]
+
 === 1.3.1 / 2012-04-15
 
 * Enhancements:

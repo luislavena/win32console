@@ -1,7 +1,7 @@
 require 'hoe'
 
 HOE = Hoe.spec 'win32console' do
-  self.version = '1.3.1'
+  self.version = '1.3.2'
 
   developer 'Gonzalo Garramuno',  'ggarra@advancedsl.com.ar'
   developer 'Justin Bailey',      'jgbailey@gmail.com'
